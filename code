@@ -1,0 +1,22 @@
+import re
+list1 = re.compile('leave(.*)\r\n')
+
+# copy from doc
+
+viper = pyperclip.paste()
+vipertrim = list1.findall(viper)
+
+# copy from doc
+
+trt = pyperclip.paste()
+list2 = re.compile('leave(.*)\r\n')
+trttrim = list2.findall(trt)
+
+common = []
+for sub in vipertrim:
+  if sub in trttrim:
+	  common.append(sub)
+results = "\n".join(common)
+pyperclip.copy(results)
+
+# paste to doc
