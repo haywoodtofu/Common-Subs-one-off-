@@ -1,0 +1,51 @@
+#! python3
+
+import pyperclip, re
+
+# create a regex for phone number
+
+phoneRegex = re.compile(r'''
+# 888-888-8888, 888-8888, (888) 888-8888, 888-8888 ext 88888, ext., x
+
+(
+((\d\d\d)|(\(\d\d\d\)))?    # area code (optional) could appear in 1 of 2 forms or not at all
+(\s|-|\.)    # first separator
+\d\d\d    # first 3 digits
+(-|\.)   # separator
+\d\d\d\d    # last 4 digits
+(((ext(\.)?\s)|x)    # extension word part (optional)
+ (\d{2,5}))?    # extension number-part (optional)
+)
+''', re.VERBOSE)
+
+# create a regex for email addresses
+
+emailRegex = re.compile('''
+# firstpart.+_ @ secondpart . 2 or 3 letters
+
+[a-zA-Z0-9_.+]+    # name part
+@                  # @ symbal
+[a-zA-Z0-9_.+]+    # domain name part
+
+''', re.VERBOSE)
+
+# get the text off the clipboard
+
+text = pyperclip.paste()
+
+# extract the email/phone from this text
+
+extractedPhone = phoneRegex.findall(text) # extracts a list of tuples
+extractedEmail = emailRegex.findall(text)
+
+allPhoneNumbers = []
+for phoneNumber in extractedPhone:
+    allPhoneNumbers.append(phoneNumber[0]) # we only want the first item in each tuple
+
+# copy the extracted email/phone to to clipboard
+
+results = "\n".join(allPhoneNumbers) + "\n" + "\n".join(extractedEmail)
+pyperclip.copy(results)
+
+print(allPhoneNumbers)
+print(extractedEmail)
